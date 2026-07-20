@@ -1,0 +1,14 @@
+{
+  "name": "수학은 어려워도 시 쓰기는 재미있어",
+  "short_name": "시 쓰기는 재미있어",
+  "description": "프린세스패밀리 학급 시집 - 방문자 방명록 포함",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#26221f",
+  "theme_color": "#26221f",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

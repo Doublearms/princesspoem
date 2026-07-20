@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>수학은 어려워도 시 쓰기는 재미있어</title>
+<meta name="theme-color" content="#2A2724">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'SeoulNotice';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SeoulNotice';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2505-1@1.0/SeoulAlrimTTF-ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-display: swap;
+  }
+  :root{
+    --wall:#26221f;
+    --wall-soft:#322c27;
+    --paper:#F5ECDA;
+    --paper-line:#e6d8b8;
+    --ink:#2b2620;
+    --ink-soft:#6b6152;
+    --gold:#c9a227;
+    --gold-soft:#d9bd66;
+    --cream:#f4ecdd;
+    --font-title:'SeoulNotice', 'Noto Sans KR', sans-serif;
+    --font-ui:'Noto Sans KR', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;overscroll-behavior:none;}
+  body{
+    font-family:var(--font-ui);
+    background:var(--wall);
+    color:var(--ink);
+  }
+  button{font-family:var(--font-ui); cursor:pointer;}
+  input{font-family:var(--font-ui);}
+
+  /* ---------- SWIPER ---------- */
+  .swiper{
+    display:flex;
+    width:100vw;
+    height:100dvh;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+  }
+  .swiper::-webkit-scrollbar{ display:none; }
+  .page{
+    flex:0 0 100vw;
+    width:100vw;
+    height:100dvh;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* ---------- COVER PAGE ---------- */
+  .cover-page{
+    background:
+      radial-gradient(ellipse at 50% 0%, #3a332c 0%, var(--wall) 65%);
+  }
+  .cover-card{
+    width:min(88vw, 420px);
+    background:var(--paper);
+    border-radius:8px;
+    padding:44px 30px 34px;
+    text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,.5);
+    position:relative;
+  }
+  .cover-card::before{
+    content:"";
+    position:absolute; inset:12px;
+    border:1px solid var(--paper-line);
+    border-radius:4px;
+    pointer-events:none;
+  }
+  .cover-title{
+    font-family:var(--font-title);
+    font-weight:800;
+    font-size:clamp(28px, 7.5vw, 38px);
+    line-height:1.35;
+    margin:0 0 16px;
+    color:var(--ink);
+  }
+  .cover-rule{
+    width:52px; height:2px; background:var(--gold);
+    margin:0 auto 16px;
+  }
+  .cover-author{
+    font-family:var(--font-ui);
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0 0 30px;
+    letter-spacing:.02em;
+  }
+  .cover-author b{ color:var(--ink); font-weight:700; }
+
+  .guestbook{
+    border-top:1px dashed var(--paper-line);
+    padding-top:22px;
+  }
+  .guestbook-label{
+    font-family:var(--font-ui);
+    font-weight:700;
+    font-size:16px;
+    margin:0 0 12px;
+  }
+  #nameForm{ display:flex; gap:8px; }
+  #visitorName{
+    flex:1;
+    font-size:15px;
+    padding:9px 10px;
+    border:1px solid var(--paper-line);
+    border-radius:6px;
+    background:#fffdf8;
+    color:var(--ink);
+  }
+  #visitorName:focus{ outline:none; border-color:var(--gold); }
+  #nameForm button{
+    background:var(--ink);
+    color:var(--cream);
+    border:none;
+    padding:9px 16px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:700;
+  }
+  #nameForm button:active{ transform:scale(.97); }
+  .guestbook-msg{
+    min-height:18px;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:10px;
+  }
+  .guestbook-msg.show{ color:#7a5b1e; font-weight:700; }
+
+  .swipe-hint{
+    margin-top:26px;
+    font-family:var(--font-ui);
+    font-size:12px;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+  }
+  .swipe-hint .arrow{
+    display:inline-block;
+    animation:nudge 1.6s ease-in-out infinite;
+  }
+  @keyframes nudge{
+    0%,100%{ transform:translateX(0); opacity:.5; }
+    50%{ transform:translateX(6px); opacity:1; }
+  }
+
+  /* ---------- POEM PAGE ---------- */
+  .poem-page{ background:var(--wall); }
+  .poem-frame{
+    width:min(92vw, 480px);
+    height:min(82dvh, 680px);
+    background:#fff;
+    border-radius:4px;
+    box-shadow:0 26px 60px rgba(0,0,0,.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    padding:8px;
+  }
+  .poem-frame img{
+    width:100%; height:100%;
+    object-fit:contain;
+    display:block;
+  }
+
+  /* ---------- CLOSING PAGE ---------- */
+  .closing-page{
+    background:var(--cream);
+    text-align:center;
+  }
+  .closing-date{
+    font-family:var(--font-ui);
+    font-weight:700;
+    font-size:clamp(20px, 5vw, 26px);
+    color:var(--ink);
+    margin:0 0 14px;
+    letter-spacing:.03em;
+  }
+  .closing-place{
+    font-family:var(--font-ui);
+    font-size:clamp(14px, 3.6vw, 17px);
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  /* ---------- NAV UI (fixed, shared) ---------- */
+  .nav-btn{
+    position:fixed;
+    top:50%; transform:translateY(-50%);
+    width:38px; height:38px;
+    border-radius:50%;
+    border:1px solid rgba(244,236,215,.25);
+    background:rgba(0,0,0,.28);
+    color:#f4ecd7;
+    font-size:16px;
+    z-index:30;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .nav-btn.prev{ left:10px; }
+  .nav-btn.next{ right:10px; }
+  .nav-btn:disabled{ opacity:0; pointer-events:none; }
+
+  .page-counter{
+    position:fixed;
+    left:50%; bottom:16px; transform:translateX(-50%);
+    font-family:var(--font-ui);
+    font-size:11px;
+    color:rgba(244,236,215,.75);
+    background:rgba(0,0,0,.28);
+    padding:4px 10px;
+    border-radius:999px;
+    z-index:30;
+    letter-spacing:.05em;
+  }
+
+  .admin-trigger{
+    position:fixed; right:12px; bottom:12px;
+    width:30px; height:30px; border-radius:50%;
+    border:1px solid rgba(244,236,215,.25);
+    background:rgba(0,0,0,.28); color:#f4ecd7bb; font-size:13px;
+    z-index:40;
+  }
+  .admin-panel{
+    position:fixed; inset:0; background:rgba(10,10,9,.72);
+    display:flex; align-items:center; justify-content:center; z-index:60; padding:20px;
+  }
+  .admin-card{
+    background:var(--paper); border-radius:10px; padding:26px;
+    width:min(92vw,420px); max-height:80vh; overflow:auto;
+  }
+  .admin-card h2{ font-family:var(--font-ui); font-weight:700; margin:0 0 4px; color:var(--ink); }
+  .admin-sub{ font-size:12px; color:var(--ink-soft); margin:0 0 16px; }
+  .admin-sub a{ color:#7a5b1e; }
+  .visitor-row{
+    display:flex; justify-content:space-between; padding:8px 0;
+    border-bottom:1px solid rgba(0,0,0,.08); font-size:14px;
+  }
+  .visitor-row time{ color:var(--ink-soft); font-size:12px; }
+  .admin-actions{ display:flex; gap:10px; margin-top:16px; }
+  .admin-actions button{
+    border:none; border-radius:8px; padding:9px 14px; font-size:13px; font-weight:700;
+  }
+  #closeAdmin{ background:var(--ink); color:var(--paper); }
+  #copyList{ background:#4a4237; color:#fff; }
+  .empty-note{ font-size:13px; color:var(--ink-soft); }
+
+  [hidden]{ display:none !important; }
+
+  @media (max-width:420px){
+    .poem-frame{ width:94vw; height:80dvh; }
+  }
+</style>
+</head>
+<body>
+
+<div class="swiper" id="swiper">
+
+  <section class="page cover-page">
+    <div class="cover-card">
+      <h1 class="cover-title">수학은 어려워도<br>시 쓰기는 재미있어</h1>
+      <div class="cover-rule"></div>
+      <p class="cover-author">지은이 · <b>프린세스패밀리</b></p>
+
+      <div class="guestbook">
+        <p class="guestbook-label">방문자의 이름은?</p>
+        <form id="nameForm" autocomplete="off">
+          <input id="visitorName" type="text" placeholder="이름을 적어주세요" maxlength="20" required>
+          <button type="submit">남기기</button>
+        </form>
+        <p class="guestbook-msg" id="guestbookMsg"></p>
+      </div>
+
+      <p class="swipe-hint">오른쪽으로 넘겨서 시를 만나보세요 <span class="arrow">→</span></p>
+    </div>
+  </section>
+
+  <!-- 시 페이지는 JS가 무작위 순서로 여기 채워 넣습니다 -->
+
+  <section class="page closing-page">
+    <p class="closing-date">2026. 7. 20.</p>
+    <p class="closing-place">볕이 내리쬐는 별관 4층에서</p>
+  </section>
+
+</div>
+
+<button class="nav-btn prev" id="prevBtn" aria-label="이전">←</button>
+<button class="nav-btn next" id="nextBtn" aria-label="다음">→</button>
+<div class="page-counter" id="pageCounter">1 / 23</div>
+
+<button class="admin-trigger" id="adminTrigger" title="관리자">⚙</button>
+<div class="admin-panel" id="adminPanel" hidden>
+  <div class="admin-card">
+    <h2>방문자 목록</h2>
+    <p class="admin-sub">이 시집을 열어본 방문자들의 이름입니다.</p>
+    <div id="visitorList"></div>
+    <div class="admin-actions">
+      <button id="copyList">이름 복사하기</button>
+      <button id="closeAdmin">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const swiper = document.getElementById('swiper');
+  const coverPage = document.querySelector('.cover-page');
+  const closingPage = document.querySelector('.closing-page');
+
+  // ---- 시 이미지 무작위로 배치 ----
+  const poemFiles = Array.from({length:21}, (_, i) => 'poems/' + String(i+1).padStart(2,'0') + '.jpg');
+  for(let i = poemFiles.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [poemFiles[i], poemFiles[j]] = [poemFiles[j], poemFiles[i]];
+  }
+  poemFiles.forEach((src, idx) => {
+    const sec = document.createElement('section');
+    sec.className = 'page poem-page';
+    sec.innerHTML = '<div class="poem-frame"><img src="' + src + '" alt="시 ' + (idx+1) + '" loading="lazy"></div>';
+    swiper.insertBefore(sec, closingPage);
+  });
+
+  const pages = Array.from(document.querySelectorAll('.page'));
+  const N = pages.length;
+  let current = 0;
+
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const counter = document.getElementById('pageCounter');
+
+  function updateNav(){
+    prevBtn.disabled = current <= 0;
+    nextBtn.disabled = current >= N - 1;
+    counter.textContent = (current+1) + ' / ' + N;
+  }
+  function goTo(i){
+    i = Math.max(0, Math.min(N-1, i));
+    swiper.scrollTo({ left: i * swiper.clientWidth, behavior:'smooth' });
+  }
+  prevBtn.addEventListener('click', ()=> goTo(current - 1));
+  nextBtn.addEventListener('click', ()=> goTo(current + 1));
+
+  let scrollTimer = null;
+  swiper.addEventListener('scroll', ()=>{
+    if(scrollTimer) clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(()=>{
+      current = Math.round(swiper.scrollLeft / swiper.clientWidth);
+      updateNav();
+    }, 80);
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if(e.key === 'ArrowRight') goTo(current + 1);
+    if(e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  updateNav();
+
+  // ---- 방명록: 이름 저장 (구글시트 우선, 실패 시 로컬 백업) ----
+  const form = document.getElementById('nameForm');
+  const input = document.getElementById('visitorName');
+  const guestbookMsg = document.getElementById('guestbookMsg');
+
+  // ↓↓↓ Google Apps Script 배포 후, 아래 두 값을 본인 것으로 바꿔주세요 ↓↓↓
+  const SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwxxy6x39vthqkYcfuD_rgYxwJ_PFgUhfdsyHeT9Ue8eQ4NQFixgtWnOpghILjmNjA4/exec';
+  const SHEET_VIEW_URL = 'https://docs.google.com/spreadsheets/d/148b24sTRi-sfy0W0_O2OnNTaQo8qr6PweU-5g8g5xl4/edit?usp=sharing';
+  // ↑↑↑ 여기까지 ↑↑↑
+  // 관리자 비밀번호는 여기 코드가 아니라 Code.gs의 ADMIN_KEY 값과 서버에서 대조합니다.
+  // ⚙ 눌렀을 때 입력하는 비밀번호가 Code.gs의 ADMIN_KEY와 같아야 목록이 보여요.
+
+  const STORAGE_KEY = 'poembook_visitors';
+  const sheetConfigured = () => SHEET_WEBAPP_URL.indexOf('YOUR_') !== 0;
+
+  function saveLocalBackup(entry){
+    try{
+      const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      arr.push(entry);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }catch(err){ /* ignore */ }
+  }
+
+  async function saveVisitor(name){
+    const entry = { name, ts: new Date().toISOString() };
+    saveLocalBackup(entry);
+    if(!sheetConfigured()) return;
+    try{
+      await fetch(SHEET_WEBAPP_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ name })
+      });
+    }catch(err){
+      console.error('구글시트 저장 실패 (로컬 백업은 저장됨)', err);
+    }
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = input.value.trim();
+    if(!name) return;
+    saveVisitor(name);
+    guestbookMsg.textContent = name + '님, 반가워요! 남겨주셔서 고마워요.';
+    guestbookMsg.classList.add('show');
+    input.value = '';
+    input.blur();
+  });
+
+  // ---- 관리자 패널 ----
+  const adminTrigger = document.getElementById('adminTrigger');
+  const adminPanel = document.getElementById('adminPanel');
+  const visitorList = document.getElementById('visitorList');
+  const closeAdmin = document.getElementById('closeAdmin');
+  const copyListBtn = document.getElementById('copyList');
+  let lastNames = [];
+
+  adminTrigger.addEventListener('click', ()=>{
+    const pw = window.prompt('관리자 비밀번호를 입력하세요');
+    if(pw === null || pw.trim()==='') return;
+    adminPanel.hidden = false;
+    loadVisitors(pw.trim());
+  });
+  closeAdmin.addEventListener('click', ()=>{ adminPanel.hidden = true; });
+  copyListBtn.addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(lastNames.join('\n'));
+      copyListBtn.textContent = '복사됨!';
+      setTimeout(()=>copyListBtn.textContent='이름 복사하기', 1500);
+    }catch(err){
+      alert('복사에 실패했어요.');
+    }
+  });
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  async function loadVisitors(adminKey){
+    visitorList.innerHTML = '<p class="empty-note">불러오는 중...</p>';
+    let entries = [];
+    let sourceNote = '';
+    let sheetFetchFailed = false;
+    let unauthorized = false;
+
+    if(sheetConfigured()){
+      try{
+        const url = SHEET_WEBAPP_URL + '?key=' + encodeURIComponent(adminKey || '');
+        const res = await fetch(url, { method:'GET' });
+        const json = await res.json();
+        if(json && json.error === 'unauthorized'){
+          unauthorized = true;
+        } else {
+          entries = (json.visitors || []).map(v => ({ name: v.name, ts: v.ts }));
+          sourceNote = '(구글시트 · 모든 기기 공통)';
+        }
+      }catch(err){
+        console.error('구글시트 조회 실패, 로컬 백업으로 대체', err);
+        sheetFetchFailed = true;
+      }
+    }
+
+    if(unauthorized){
+      visitorList.innerHTML = '<p class="empty-note">비밀번호가 올바르지 않아요.</p>';
+      lastNames = [];
+      return;
+    }
+
+    if(entries.length===0 && (!sheetConfigured() || sheetFetchFailed)){
+      try{
+        entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        sourceNote = '(이 브라우저 저장 백업)';
+      }catch(err){ /* ignore */ }
+    }
+
+    if(entries.length===0){
+      visitorList.innerHTML = '<p class="empty-note">아직 방문자가 없어요.</p>';
+      lastNames = [];
+    } else {
+      entries.sort((a,b)=> new Date(b.ts) - new Date(a.ts));
+      lastNames = entries.map(e=>e.name);
+      visitorList.innerHTML = '<p class="admin-sub">총 ' + entries.length + '명 방문 ' + sourceNote + '</p>' +
+        entries.map(e=>{
+          const d = new Date(e.ts);
+          const timeStr = isNaN(d) ? '' : d.toLocaleString('ko-KR');
+          return '<div class="visitor-row"><span>'+ escapeHtml(e.name) +'</span><time>'+ timeStr +'</time></div>';
+        }).join('');
+    }
+
+    if(sheetConfigured() && SHEET_VIEW_URL.indexOf('YOUR_') !== 0){
+      visitorList.innerHTML += '<p class="admin-sub"><a href="'+ SHEET_VIEW_URL +'" target="_blank" rel="noopener">구글시트에서 전체 보기 →</a></p>';
+    }
+  }
+})();
+</script>
+</body>
+</html>
