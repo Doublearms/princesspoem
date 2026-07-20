@@ -79,10 +79,10 @@
       radial-gradient(ellipse at 50% 0%, #3a332c 0%, var(--wall) 65%);
   }
   .cover-card{
-    width:min(88vw, 420px);
+    width:min(92vw, 420px);
     background:var(--paper);
     border-radius:8px;
-    padding:44px 30px 34px;
+    padding:40px 22px 30px;
     text-align:center;
     box-shadow:0 30px 70px rgba(0,0,0,.5);
     position:relative;
@@ -125,11 +125,12 @@
     font-size:16px;
     margin:0 0 12px;
   }
-  #nameForm{ display:flex; gap:8px; }
+  #nameForm{ display:flex; gap:6px; }
   #visitorName{
     flex:1;
+    min-width:0;
     font-size:15px;
-    padding:9px 10px;
+    padding:9px 8px;
     border:1px solid var(--paper-line);
     border-radius:6px;
     background:#fffdf8;
@@ -137,15 +138,18 @@
   }
   #visitorName:focus{ outline:none; border-color:var(--gold); }
   #nameForm button{
+    flex:0 0 auto;
+    white-space:nowrap;
     background:var(--ink);
     color:var(--cream);
     border:none;
-    padding:9px 16px;
+    padding:9px 12px;
     border-radius:6px;
     font-size:13px;
     font-weight:700;
   }
   #nameForm button:active{ transform:scale(.97); }
+  #nameForm button:disabled{ opacity:.5; }
   .guestbook-msg{
     min-height:18px;
     font-size:12px;
@@ -279,6 +283,11 @@
   @media (max-width:420px){
     .poem-frame{ width:94vw; height:80dvh; }
   }
+  @media (max-width:360px){
+    .cover-card{ padding:34px 16px 26px; }
+    #visitorName{ font-size:14px; padding:9px 6px; }
+    #nameForm button{ padding:9px 10px; font-size:12px; }
+  }
 </style>
 </head>
 <body>
@@ -300,7 +309,7 @@
         <p class="guestbook-msg" id="guestbookMsg"></p>
       </div>
 
-      <p class="swipe-hint">오른쪽으로 넘겨서 시를 만나보세요 <span class="arrow">→</span></p>
+      <p class="swipe-hint" id="swipeHint">이름을 남기면 시를 만나볼 수 있어요 ✎</p>
     </div>
   </section>
 
@@ -352,6 +361,7 @@
   const pages = Array.from(document.querySelectorAll('.page'));
   const N = pages.length;
   let current = 0;
+  let submitted = false;
 
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
@@ -359,10 +369,11 @@
 
   function updateNav(){
     prevBtn.disabled = current <= 0;
-    nextBtn.disabled = current >= N - 1;
+    nextBtn.disabled = (current >= N - 1) || (current === 0 && !submitted);
     counter.textContent = (current+1) + ' / ' + N;
   }
   function goTo(i){
+    if(i > current && current === 0 && !submitted) return; // 방명록 작성 전엔 다음으로 못 넘어감
     i = Math.max(0, Math.min(N-1, i));
     swiper.scrollTo({ left: i * swiper.clientWidth, behavior:'smooth' });
   }
@@ -373,10 +384,26 @@
   swiper.addEventListener('scroll', ()=>{
     if(scrollTimer) clearTimeout(scrollTimer);
     scrollTimer = setTimeout(()=>{
-      current = Math.round(swiper.scrollLeft / swiper.clientWidth);
+      const landed = Math.round(swiper.scrollLeft / swiper.clientWidth);
+      if(landed > 0 && !submitted){
+        // 손가락 스와이프 등으로 방명록 없이 넘어간 경우 표지로 되돌림
+        current = 0;
+        swiper.scrollTo({ left: 0, behavior:'auto' });
+        updateNav();
+        return;
+      }
+      current = landed;
       updateNav();
     }, 80);
   });
+
+  // 방명록 작성 전에는 스와이프/트랙패드로도 못 넘어가게 막기
+  swiper.addEventListener('touchmove', (e)=>{
+    if(current === 0 && !submitted) e.preventDefault();
+  }, { passive:false });
+  swiper.addEventListener('wheel', (e)=>{
+    if(current === 0 && !submitted) e.preventDefault();
+  }, { passive:false });
 
   document.addEventListener('keydown', (e)=>{
     const tag = (document.activeElement && document.activeElement.tagName) || '';
@@ -435,6 +462,12 @@
     guestbookMsg.classList.add('show');
     input.value = '';
     input.blur();
+
+    submitted = true;
+    const hint = document.getElementById('swipeHint');
+    if(hint) hint.innerHTML = '시로 넘어가는 중이에요 <span class="arrow">→</span>';
+    updateNav();
+    setTimeout(()=> goTo(1), 500);
   });
 
   // ---- 관리자 패널 ----
