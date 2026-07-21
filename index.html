@@ -86,7 +86,7 @@
     font-size: clamp(10px, min(3vw, 2.12dvh), 22px);
     background:var(--paper);
     border-radius:6px;
-    padding:5.8em 2.2em 2em; /위쪽 여백
+    padding:5.8em 2.2em 2em;
     text-align:center;
     box-shadow:0 30px 70px rgba(0,0,0,.5);
     position:relative;
@@ -119,7 +119,7 @@
   }
   .cover-author{
     font-family:var(--font-ui);
-    font-size:1.1em;
+    font-size:0.9em;
     color:var(--ink-soft);
     margin:0;
     letter-spacing:.02em;
@@ -309,13 +309,13 @@
         <div class="guestbook">
           <p class="guestbook-label">이름을 남기면 시를 만날 수 있어요</p>
           <form id="nameForm" autocomplete="off">
-            <input id="visitorName" type="text" placeholder="이름을 적어주세요" maxlength="20" required>
+            <input id="visitorName" type="text" placeholder="예) 전지룡" maxlength="20" required>
             <button type="submit">남기기</button>
           </form>
           <p class="guestbook-msg" id="guestbookMsg"></p>
         </div>
 
-        <p class="swipe-hint" id="swipeHint">*문기초등학교*</p>
+        <p class="swipe-hint" id="swipeHint">문기초등학교</p>
       </div>
     </div>
   </section>
