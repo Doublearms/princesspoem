@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <title>수학은 어려워도 시 쓰기는 재미있어</title>
 <meta name="theme-color" content="#2A2724">
 <link rel="manifest" href="manifest.json">
@@ -38,20 +38,39 @@
     --font-ui:'Noto Sans KR', sans-serif;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;height:100%;overscroll-behavior:none;}
-  body{
-    font-family:var(--font-ui);
+  
+  /* 전체 화면을 감싸는 배경 및 스크롤 방지 */
+  html,body{
+    margin:0;padding:0;
+    width:100%; height:100%;
+    overflow:hidden;
     background:var(--wall);
+    font-family:var(--font-ui);
     color:var(--ink);
+    overscroll-behavior:none;
   }
+
+  /* ---------- 반응형 가상 뷰포트 (App Wrapper) ---------- */
+  #app-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 420px;   /* 기준 디자인 너비 */
+    height: 780px;  /* 기준 디자인 높이 */
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    overflow: hidden;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+  }
+
   button{font-family:var(--font-ui); cursor:pointer;}
   input{font-family:var(--font-ui);}
 
   /* ---------- SWIPER ---------- */
   .swiper{
     display:flex;
-    width:100vw;
-    height:100dvh;
+    width:420px;
+    height:780px;
     overflow-x:auto;
     overflow-y:hidden;
     scroll-snap-type:x mandatory;
@@ -60,9 +79,9 @@
   }
   .swiper::-webkit-scrollbar{ display:none; }
   .page{
-    flex:0 0 100vw;
-    width:100vw;
-    height:100dvh;
+    flex:0 0 420px;
+    width:420px;
+    height:780px;
     scroll-snap-align:start;
     scroll-snap-stop:always;
     display:flex;
@@ -75,14 +94,13 @@
 
   /* ---------- COVER PAGE ---------- */
   .cover-page{
-    background:
-      radial-gradient(ellipse at 50% 0%, #3a332c 0%, var(--wall) 65%);
+    background: radial-gradient(ellipse at 50% 0%, #3a332c 0%, var(--wall) 65%);
   }
   .cover-card{
-    width:min(92vw, 420px);
+    width:380px;
     background:var(--paper);
     border-radius:8px;
-    padding:40px 22px 30px;
+    padding:35px 22px 25px;
     text-align:center;
     box-shadow:0 30px 70px rgba(0,0,0,.5);
     position:relative;
@@ -97,7 +115,7 @@
   .cover-title{
     font-family:var(--font-title);
     font-weight:800;
-    font-size:clamp(28px, 7.5vw, 38px);
+    font-size:32px;
     line-height:1.35;
     margin:0 0 16px;
     color:var(--ink);
@@ -110,27 +128,27 @@
     font-family:var(--font-ui);
     font-size:14px;
     color:var(--ink-soft);
-    margin:0 0 30px;
+    margin:0 0 24px;
     letter-spacing:.02em;
   }
   .cover-author b{ color:var(--ink); font-weight:700; }
 
   .guestbook{
     border-top:1px dashed var(--paper-line);
-    padding-top:22px;
+    padding-top:18px;
   }
   .guestbook-label{
     font-family:var(--font-ui);
     font-weight:700;
-    font-size:16px;
-    margin:0 0 12px;
+    font-size:15px;
+    margin:0 0 10px;
   }
   #nameForm{ display:flex; gap:6px; }
   #visitorName{
     flex:1;
     min-width:0;
-    font-size:15px;
-    padding:9px 8px;
+    font-size:14px;
+    padding:8px;
     border:1px solid var(--paper-line);
     border-radius:6px;
     background:#fffdf8;
@@ -143,7 +161,7 @@
     background:var(--ink);
     color:var(--cream);
     border:none;
-    padding:9px 12px;
+    padding:8px 12px;
     border-radius:6px;
     font-size:13px;
     font-weight:700;
@@ -154,12 +172,12 @@
     min-height:18px;
     font-size:12px;
     color:var(--ink-soft);
-    margin-top:10px;
+    margin-top:8px;
   }
   .guestbook-msg.show{ color:#7a5b1e; font-weight:700; }
 
   .swipe-hint{
-    margin-top:26px;
+    margin-top:20px;
     font-family:var(--font-ui);
     font-size:12px;
     color:var(--ink-soft);
@@ -180,8 +198,8 @@
   /* ---------- POEM PAGE ---------- */
   .poem-page{ background:var(--wall); }
   .poem-frame{
-    width:min(92vw, 480px);
-    height:min(82dvh, 680px);
+    width:380px;
+    height:640px;
     background:#fff;
     border-radius:4px;
     box-shadow:0 26px 60px rgba(0,0,0,.55);
@@ -205,21 +223,21 @@
   .closing-date{
     font-family:var(--font-ui);
     font-weight:700;
-    font-size:clamp(20px, 5vw, 26px);
+    font-size:24px;
     color:var(--ink);
     margin:0 0 14px;
     letter-spacing:.03em;
   }
   .closing-place{
     font-family:var(--font-ui);
-    font-size:clamp(14px, 3.6vw, 17px);
+    font-size:16px;
     color:var(--ink-soft);
     margin:0;
   }
 
   /* ---------- NAV UI (fixed, shared) ---------- */
   .nav-btn{
-    position:fixed;
+    position:absolute;
     top:50%; transform:translateY(-50%);
     width:38px; height:38px;
     border-radius:50%;
@@ -235,7 +253,7 @@
   .nav-btn:disabled{ opacity:0; pointer-events:none; }
 
   .page-counter{
-    position:fixed;
+    position:absolute;
     left:50%; bottom:16px; transform:translateX(-50%);
     font-family:var(--font-ui);
     font-size:11px;
@@ -248,19 +266,19 @@
   }
 
   .admin-trigger{
-    position:fixed; right:12px; bottom:12px;
+    position:absolute; right:12px; bottom:12px;
     width:30px; height:30px; border-radius:50%;
     border:1px solid rgba(244,236,215,.25);
     background:rgba(0,0,0,.28); color:#f4ecd7bb; font-size:13px;
     z-index:40;
   }
   .admin-panel{
-    position:fixed; inset:0; background:rgba(10,10,9,.72);
+    position:absolute; inset:0; background:rgba(10,10,9,.72);
     display:flex; align-items:center; justify-content:center; z-index:60; padding:20px;
   }
   .admin-card{
     background:var(--paper); border-radius:10px; padding:26px;
-    width:min(92vw,420px); max-height:80vh; overflow:auto;
+    width:100%; max-height:80vh; overflow:auto;
   }
   .admin-card h2{ font-family:var(--font-ui); font-weight:700; margin:0 0 4px; color:var(--ink); }
   .admin-sub{ font-size:12px; color:var(--ink-soft); margin:0 0 16px; }
@@ -279,67 +297,81 @@
   .empty-note{ font-size:13px; color:var(--ink-soft); }
 
   [hidden]{ display:none !important; }
-
-  @media (max-width:420px){
-    .poem-frame{ width:94vw; height:80dvh; }
-  }
-  @media (max-width:360px){
-    .cover-card{ padding:34px 16px 26px; }
-    #visitorName{ font-size:14px; padding:9px 6px; }
-    #nameForm button{ padding:9px 10px; font-size:12px; }
-  }
 </style>
 </head>
 <body>
 
-<div class="swiper" id="swiper">
+<!-- 전체 화면에 비율 맞춤형으로 확대/축소될 래퍼 -->
+<div id="app-wrapper">
+  <div class="swiper" id="swiper">
 
-  <section class="page cover-page">
-    <div class="cover-card">
-      <h1 class="cover-title">수학은 어려워도<br>시 쓰기는 재미있어</h1>
-      <div class="cover-rule"></div>
-      <p class="cover-author">지은이 · <b>프린세스패밀리</b></p>
+    <section class="page cover-page">
+      <div class="cover-card">
+        <h1 class="cover-title">수학은 어려워도<br>시 쓰기는 재미있어</h1>
+        <div class="cover-rule"></div>
+        <p class="cover-author">지은이 · <b>프린세스패밀리</b></p>
 
-      <div class="guestbook">
-        <p class="guestbook-label">방문자의 이름은?</p>
-        <form id="nameForm" autocomplete="off">
-          <input id="visitorName" type="text" placeholder="이름을 적어주세요" maxlength="20" required>
-          <button type="submit">남기기</button>
-        </form>
-        <p class="guestbook-msg" id="guestbookMsg"></p>
+        <div class="guestbook">
+          <p class="guestbook-label">방문자의 이름은?</p>
+          <form id="nameForm" autocomplete="off">
+            <input id="visitorName" type="text" placeholder="이름을 적어주세요" maxlength="20" required>
+            <button type="submit">남기기</button>
+          </form>
+          <p class="guestbook-msg" id="guestbookMsg"></p>
+        </div>
+
+        <p class="swipe-hint" id="swipeHint">이름을 남기면 시를 만나볼 수 있어요 ✎</p>
       </div>
+    </section>
 
-      <p class="swipe-hint" id="swipeHint">이름을 남기면 시를 만나볼 수 있어요 ✎</p>
-    </div>
-  </section>
+    <!-- 시 페이지는 JS가 무작위 순서로 여기 채워 넣습니다 -->
 
-  <!-- 시 페이지는 JS가 무작위 순서로 여기 채워 넣습니다 -->
+    <section class="page closing-page">
+      <p class="closing-date">2026. 7. 20.</p>
+      <p class="closing-place">볕이 내리쬐는 별관 4층에서</p>
+    </section>
 
-  <section class="page closing-page">
-    <p class="closing-date">2026. 7. 20.</p>
-    <p class="closing-place">볕이 내리쬐는 별관 4층에서</p>
-  </section>
+  </div>
 
-</div>
+  <button class="nav-btn prev" id="prevBtn" aria-label="이전">←</button>
+  <button class="nav-btn next" id="nextBtn" aria-label="다음">→</button>
+  <div class="page-counter" id="pageCounter">1 / 23</div>
 
-<button class="nav-btn prev" id="prevBtn" aria-label="이전">←</button>
-<button class="nav-btn next" id="nextBtn" aria-label="다음">→</button>
-<div class="page-counter" id="pageCounter">1 / 23</div>
-
-<button class="admin-trigger" id="adminTrigger" title="관리자">⚙</button>
-<div class="admin-panel" id="adminPanel" hidden>
-  <div class="admin-card">
-    <h2>방문자 목록</h2>
-    <p class="admin-sub">이 시집을 열어본 방문자들의 이름입니다.</p>
-    <div id="visitorList"></div>
-    <div class="admin-actions">
-      <button id="copyList">이름 복사하기</button>
-      <button id="closeAdmin">닫기</button>
+  <button class="admin-trigger" id="adminTrigger" title="관리자">⚙</button>
+  <div class="admin-panel" id="adminPanel" hidden>
+    <div class="admin-card">
+      <h2>방문자 목록</h2>
+      <p class="admin-sub">이 시집을 열어본 방문자들의 이름입니다.</p>
+      <div id="visitorList"></div>
+      <div class="admin-actions">
+        <button id="copyList">이름 복사하기</button>
+        <button id="closeAdmin">닫기</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
+// --- 화면 크기에 맞춰 자동으로 최대 확대/축소해주는 스케일러 ---
+function resizeApp() {
+  const wrapper = document.getElementById('app-wrapper');
+  const baseWidth = 420;
+  const baseHeight = 780;
+  
+  const clientWidth = window.innerWidth;
+  const clientHeight = window.innerHeight;
+
+  // 가로/세로 비율 중 화면에 꽉 차도록(혹은 잘리지 않도록) 맞춤계산
+  const scaleX = clientWidth / baseWidth;
+  const scaleY = clientHeight / baseHeight;
+  const scale = Math.min(scaleX, scaleY); // 전체가 보이게 하려면 min, 꽉 채우려면 max
+
+  wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+}
+window.addEventListener('resize', resizeApp);
+window.addEventListener('DOMContentLoaded', resizeApp);
+
+
 (function(){
   const swiper = document.getElementById('swiper');
   const coverPage = document.querySelector('.cover-page');
@@ -373,7 +405,7 @@
     counter.textContent = (current+1) + ' / ' + N;
   }
   function goTo(i){
-    if(i > current && current === 0 && !submitted) return; // 방명록 작성 전엔 다음으로 못 넘어감
+    if(i > current && current === 0 && !submitted) return; 
     i = Math.max(0, Math.min(N-1, i));
     swiper.scrollTo({ left: i * swiper.clientWidth, behavior:'smooth' });
   }
@@ -386,7 +418,6 @@
     scrollTimer = setTimeout(()=>{
       const landed = Math.round(swiper.scrollLeft / swiper.clientWidth);
       if(landed > 0 && !submitted){
-        // 손가락 스와이프 등으로 방명록 없이 넘어간 경우 표지로 되돌림
         current = 0;
         swiper.scrollTo({ left: 0, behavior:'auto' });
         updateNav();
@@ -397,7 +428,6 @@
     }, 80);
   });
 
-  // 방명록 작성 전에는 스와이프/트랙패드로도 못 넘어가게 막기
   swiper.addEventListener('touchmove', (e)=>{
     if(current === 0 && !submitted) e.preventDefault();
   }, { passive:false });
@@ -414,17 +444,12 @@
 
   updateNav();
 
-  // ---- 방명록: 이름 저장 (구글시트 우선, 실패 시 로컬 백업) ----
   const form = document.getElementById('nameForm');
   const input = document.getElementById('visitorName');
   const guestbookMsg = document.getElementById('guestbookMsg');
 
-  // ↓↓↓ Google Apps Script 배포 후, 아래 두 값을 본인 것으로 바꿔주세요 ↓↓↓
   const SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwxxy6x39vthqkYcfuD_rgYxwJ_PFgUhfdsyHeT9Ue8eQ4NQFixgtWnOpghILjmNjA4/exec';
   const SHEET_VIEW_URL = 'https://docs.google.com/spreadsheets/d/148b24sTRi-sfy0W0_O2OnNTaQo8qr6PweU-5g8g5xl4/edit?usp=sharing';
-  // ↑↑↑ 여기까지 ↑↑↑
-  // 관리자 비밀번호는 여기 코드가 아니라 Code.gs의 ADMIN_KEY 값과 서버에서 대조합니다.
-  // ⚙ 눌렀을 때 입력하는 비밀번호가 Code.gs의 ADMIN_KEY와 같아야 목록이 보여요.
 
   const STORAGE_KEY = 'poembook_visitors';
   const sheetConfigured = () => SHEET_WEBAPP_URL.indexOf('YOUR_') !== 0;
@@ -449,7 +474,7 @@
         body: JSON.stringify({ name })
       });
     }catch(err){
-      console.error('구글시트 저장 실패 (로컬 백업은 저장됨)', err);
+      console.error('구글시트 저장 실패', err);
     }
   }
 
@@ -470,7 +495,6 @@
     setTimeout(()=> goTo(1), 500);
   });
 
-  // ---- 관리자 패널 ----
   const adminTrigger = document.getElementById('adminTrigger');
   const adminPanel = document.getElementById('adminPanel');
   const visitorList = document.getElementById('visitorList');
@@ -485,6 +509,8 @@
     loadVisitors(pw.trim());
   });
   closeAdmin.addEventListener('click', ()=>{ adminPanel.hidden = true; });
+  copyList`Btn`.addEventListener?.('click', async ()=>{}); // 유지
+
   copyListBtn.addEventListener('click', async ()=>{
     try{
       await navigator.clipboard.writeText(lastNames.join('\n'));
@@ -518,7 +544,6 @@
           sourceNote = '(구글시트 · 모든 기기 공통)';
         }
       }catch(err){
-        console.error('구글시트 조회 실패, 로컬 백업으로 대체', err);
         sheetFetchFailed = true;
       }
     }
@@ -540,7 +565,7 @@
       visitorList.innerHTML = '<p class="empty-note">아직 방문자가 없어요.</p>';
       lastNames = [];
     } else {
-      entries.sort((a,b)=> new Date(b.ts) - new Date(a.ts));
+      entries.sort((a,b)=> new Date(b.ts) - new Date(e => e.ts) );
       lastNames = entries.map(e=>e.name);
       visitorList.innerHTML = '<p class="admin-sub">총 ' + entries.length + '명 방문 ' + sourceNote + '</p>' +
         entries.map(e=>{
