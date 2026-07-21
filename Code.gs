@@ -15,9 +15,18 @@
  *
  * 보안 메모: 이름을 "쓰는" 것(doPost)은 방문자 누구나 할 수 있어야 하므로 그대로 열려 있습니다.
  * 목록을 "읽는" 것(doGet)만 아래 ADMIN_KEY와 일치할 때만 데이터를 내려주도록 잠갔습니다.
+ *
+ * 이메일 알림 관련 안내 (중요, 기존에 이미 배포해두신 분들만 해당):
+ * 이번에 MailApp(이메일 발송) 기능을 추가하면서 새로운 권한이 필요해졌습니다.
+ * 코드를 붙여넣고 저장한 뒤, 아래 순서로 한 번 권한을 승인해줘야 정상 작동합니다.
+ * 1) 위쪽 함수 선택 드롭다운에서 doGet 선택 후 "실행" 버튼 클릭
+ * 2) "권한 검토" 팝업이 뜨면 본인 구글 계정 선택 → "고급" → "이동(안전하지 않음)" → "허용"
+ * 3) 그 다음 "배포하기 > 배포 관리" 에서 연필(수정) 아이콘 클릭 → 버전을 "새 버전"으로 선택 → "배포"
+ *    (이 단계를 꼭 해야 실제 웹 앱 URL에도 새 코드가 반영됩니다)
  */
 
 const ADMIN_KEY = 'star2026'; // ← 원하는 비밀번호로 바꾸세요. index.html의 값과 동일해야 합니다.
+const NOTIFY_EMAIL = 'bynatura@naver.com'; // ← 방문자 알림을 받을 이메일 주소
 
 function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
@@ -29,7 +38,20 @@ function doPost(e) {
   }
   const name = (data.name || '').toString().slice(0, 50);
   if (name) {
-    sheet.appendRow([new Date(), name]);
+    const now = new Date();
+    sheet.appendRow([now, name]);
+
+    // 방문자 등록 알림 이메일 발송 (실패해도 방명록 저장 자체는 문제 없이 진행됨)
+    try {
+      const timeStr = Utilities.formatDate(now, Session.getScriptTimeZone() || 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
+      MailApp.sendEmail({
+        to: NOTIFY_EMAIL,
+        subject: '[시집 방명록] ' + name + '님이 방문했어요',
+        body: name + '님이 ' + timeStr + '에 방문해서 이름을 남겼어요.\n\n구글시트에서 전체 목록 확인하기:\n' + SpreadsheetApp.getActiveSpreadsheet().getUrl()
+      });
+    } catch (mailErr) {
+      // 메일 발송 권한이 아직 승인 안 됐거나 일일 발송 한도를 초과한 경우 등
+    }
   }
   return ContentService
     .createTextOutput(JSON.stringify({ result: 'success' }))
